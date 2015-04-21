@@ -7,8 +7,10 @@ import net.minecraftforge.client.IItemRenderer;
 import telepads.model.telepad;
 
 public class RenderItemBlock implements IItemRenderer {
+	@SuppressWarnings("unused")
 	private telepad pad;
 
+	@SuppressWarnings("unused")
 	private static ResourceLocation loc = new ResourceLocation("telepads:textures/telepad.png");
 	public RenderItemBlock() {
 		pad = new telepad();

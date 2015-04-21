@@ -3,6 +3,7 @@ package telepads.packets;
 import io.netty.buffer.ByteBufInputStream;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import telepads.Telepads;
 import telepads.block.TETelepad;
 import telepads.util.PlayerPadData;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -14,7 +15,6 @@ public class Clientpacket extends Serverpacket {
 	public void onClientPacket(ClientCustomPacketEvent event) {
 		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 		ByteBufInputStream dis = new ByteBufInputStream(event.packet.payload());
-
 
 		try {
 
@@ -59,6 +59,7 @@ public class Clientpacket extends Serverpacket {
 				String name = dis.readUTF();
 
 				pad.telepadname = name;
+				pad.isNamed = true;
 
 				int[] a = new int[3]; a[0] = pad.xCoord; a[1] = pad.yCoord; a[2] = pad.zCoord;
 
@@ -74,6 +75,7 @@ public class Clientpacket extends Serverpacket {
 
 			dis.close();
 		} catch (Exception e) {
+			Telepads.log.error("unexpected error! " + e.getMessage());
 		}
 	}
 }

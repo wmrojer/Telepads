@@ -5,7 +5,6 @@ import java.util.List;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -28,6 +27,7 @@ public class ItemPadLocations extends Item {
 		p.addChatMessage(new ChatComponentText(EnumChatFormatting.DARK_AQUA + s));
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack is,
@@ -39,7 +39,7 @@ public class ItemPadLocations extends Item {
 			ArrayList<Integer> b = PlayerPadData.get(par2EntityPlayer).getAllDims();
 			ArrayList<String> c = PlayerPadData.get(par2EntityPlayer).getAllNames();
 
-			for(int i = 0; i < a.size(); i++) {
+			for(int i = 0; i < a.size(); i++) { // TODO: add a max number of locations to show in the tooltip.
 				par3List.add("x"+a.get(i)[0]+ " y"+a.get(i)[1]+ " z"+a.get(i)[2]+
 						" " + c.get(i) +" Dim:" + b.get(i));
 			}
@@ -50,12 +50,6 @@ public class ItemPadLocations extends Item {
 	@SideOnly(Side.CLIENT)
 	public int getColorFromItemStack(ItemStack is, int par2) {
 		return 0x1af0ab;
-	}
-
-	@Override
-	public void onCreated(ItemStack is, World par2World,
-			EntityPlayer par3EntityPlayer) {
-		super.onCreated(is, par2World, par3EntityPlayer);
 	}
 
 	@Override
@@ -87,17 +81,8 @@ public class ItemPadLocations extends Item {
 	}
 
 	@Override
-	public void onUpdate(ItemStack is, World par2World,
-			Entity ent, int par4, boolean par5) {
-
-		super.onUpdate(is, par2World, ent, par4, par5);
-
-	}
-
-	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister par1IconRegister) {
-		super.registerIcons(par1IconRegister);
 		this.itemIcon = par1IconRegister.registerIcon("map_filled");
 	}
 }

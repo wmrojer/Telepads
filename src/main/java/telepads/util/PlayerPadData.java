@@ -9,7 +9,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
 import telepads.TelepadProxyServer;
 import telepads.block.TETelepad;
-import cpw.mods.fml.common.FMLLog;
 
 public class PlayerPadData implements IExtendedEntityProperties{
 
@@ -36,7 +35,7 @@ public class PlayerPadData implements IExtendedEntityProperties{
 	public static final void register(EntityPlayer player) {
 		if (player != null) {
 			player.registerExtendedProperties(EXT_PROP_NAME, new PlayerPadData(player));
-			FMLLog.getLogger().info("Player properties registered for Telepads");
+			//FMLLog.getLogger().info("Player properties registered for Telepads");
 		}
 	}
 
@@ -86,9 +85,12 @@ public class PlayerPadData implements IExtendedEntityProperties{
 	@Override
 	public void loadNBTData(NBTTagCompound compound) {
 		//reset arrays to prevent doubles and tripples
-		allCoords = new ArrayList<int[]>();
-		allNames = new ArrayList<String>();
-		allDims = new ArrayList<Integer>();
+		//allCoords = new ArrayList<int[]>();
+		allCoords.clear();
+		//allNames = new ArrayList<String>();
+		allNames.clear();
+		//allDims = new ArrayList<Integer>();
+		allDims.clear();
 
 		int i = compound.getInteger("Size");
 
@@ -107,7 +109,7 @@ public class PlayerPadData implements IExtendedEntityProperties{
 		int b = pad.yCoord;
 		int c = pad.zCoord;
 
-		for(int i = 0; i < allCoords.size(); i++) {
+		for(int i = 0; i < allCoords.size(); i++) { // TODO: Check dimension also before removing.
 			if(allCoords.get(i)[0] == a) {
 				if(allCoords.get(i)[1] == b) {
 					if(allCoords.get(i)[2] == c){

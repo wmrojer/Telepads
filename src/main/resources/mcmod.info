@@ -1,0 +1,18 @@
+[
+{
+  "modid": "telepads",
+  "name": "Teleportation Pads",
+  "description": "TelePads, taking teleports to a whole new level.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "http://www.minecraftforum.net/topic/2053035-",
+  "updateUrl": "",
+  "authorList": ["Subaraki"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "requiredMods": ["Forge"],
+  "dependencies": [],
+  "useDependencyInformation": "true"
+}
+]

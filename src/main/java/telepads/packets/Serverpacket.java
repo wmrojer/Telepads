@@ -26,8 +26,6 @@ public class Serverpacket {
 		ByteBufInputStream dis = new ByteBufInputStream(event.packet.payload());
 		ByteBuf buf = event.packet.payload();
 
-		System.out.println("read packet");
-
 		try {
 
 			int guiId = dis.readInt();
@@ -47,6 +45,7 @@ public class Serverpacket {
 				String name = dis.readUTF();
 
 				pad.telepadname = name;
+				pad.isNamed = true;
 				pad.addRegister();
 
 				int[] a = new int[3]; a[0] = pad.xCoord; a[1] = pad.yCoord; a[2] = pad.zCoord;
@@ -88,6 +87,7 @@ public class Serverpacket {
 
 			dis.close();
 		} catch (Exception e) {
+			Telepads.log.error("unexpected error! " + e.getMessage());
 		}
 	}
 

@@ -15,6 +15,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import telepads.Telepads;
+import telepads.config.ConfigHandler;
 import telepads.util.PlayerPadData;
 import telepads.util.TelePadGuiHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
@@ -30,13 +31,11 @@ public class BlockTelepad extends BlockContainer{
 	@Override
 	public void breakBlock(World par1World, int par2, int par3, int par4,Block b, int par6) {
 		super.breakBlock(par1World, par2, par3, par4, b, par6);
-
 		par1World.removeTileEntity(par2, par3, par4);
 	}
 
 	@Override
-	public boolean canEntityDestroy(IBlockAccess world, int x, int y, int z,
-			Entity entity) {
+	public boolean canEntityDestroy(IBlockAccess world, int x, int y, int z, Entity entity) {
 		return false;
 	}
 
@@ -192,11 +191,13 @@ public class BlockTelepad extends BlockContainer{
 			EntityLivingBase par5EntityLivingBase, ItemStack par6ItemStack) {
 
 
-		if(par1World.provider.dimensionId == 1){
-			par1World.newExplosion((Entity)null, x + 0.5F, y + 0.5F, z + 0.5F, 5.0F, true, true);
-			par1World.setBlockToAir(x, y, z);
-			par1World.removeTileEntity(x, y, z);
-			return;
+		for(int i=0; i < ConfigHandler.blacklistedDimensions.length; i++) {
+			if(par1World.provider.dimensionId == ConfigHandler.blacklistedDimensions[i]){
+				par1World.newExplosion((Entity)null, x + 0.5F, y + 0.5F, z + 0.5F, 5.0F, true, true);
+				par1World.setBlockToAir(x, y, z);
+				par1World.removeTileEntity(x, y, z);
+				return;
+			}
 		}
 
 		TETelepad te = new TETelepad();
@@ -206,6 +207,7 @@ public class BlockTelepad extends BlockContainer{
 
 			te.ownerName = p.getDisplayName();
 			te.dimension = par1World.provider.dimensionId;
+			te.isNamed = false;
 
 			p.openGui(Telepads.instance, TelePadGuiHandler.NAMETELEPAD, par1World, x, y, z);
 		}
@@ -234,38 +236,22 @@ public class BlockTelepad extends BlockContainer{
 			for (int l = 0; l < 100; ++l)
 			{
 				double d1 = y + (par5Random.nextFloat()*1.5f);
-				double d0 = x + par5Random.nextFloat();
-				double d2 = 0.0D;
-				double d3 = 0.0D;
-				double d4 = 0.0D;
-				int i1 = (par5Random.nextInt(2) * 2) - 1;
-				int j1 = (par5Random.nextInt(2) * 2) - 1;
-				d2 = (par5Random.nextFloat() - 0.5D) * 0.125D;
-				d3 = (par5Random.nextFloat() - 0.5D) * 0.125D;
-				d4 = (par5Random.nextFloat() - 0.5D) * 0.125D;
-				d4 = par5Random.nextFloat() * 1.0F * j1;
-				d2 = par5Random.nextFloat() * 1.0F * i1;
+				double d2 = par5Random.nextFloat() * (par5Random.nextInt(2) * 2 - 1);
+				double d3 = (par5Random.nextFloat() - 0.5D) * 0.125D;
+				double d4 = par5Random.nextFloat() * (par5Random.nextInt(2) * 2 - 1);
 				par1World.spawnParticle("portal", x+0.5, d1, z+0.5, d2, d3, d4);
 			}
 		} else{
-			if (par5Random.nextInt(50) == 0)
-			{
+//			if (par5Random.nextInt(50) == 0)
+//			{
 				//par1World.playSound((double)x , (double)y, (double)z, "subaraki:telepadShort", 1.0F, par5Random.nextFloat() * 0.4F + 0.8F, false);
-			}
+//			}
 			for (int l = 0; l < 5; ++l)
 			{
 				double d1 = y + (par5Random.nextFloat()*1.5f);
-				double d0 = z + par5Random.nextFloat();
-				double d2 = 0.0D;
-				double d3 = 0.0D;
-				double d4 = 0.0D;
-				int i1 = (par5Random.nextInt(2) * 2) - 1;
-				int j1 = (par5Random.nextInt(2) * 2) - 1;
-				d2 = (par5Random.nextFloat() - 0.5D) * 0.125D;
-				d3 = (par5Random.nextFloat() - 0.5D) * 0.125D;
-				d4 = (par5Random.nextFloat() - 0.5D) * 0.125D;
-				d4 = par5Random.nextFloat() * 1.0F * j1;
-				d2 = par5Random.nextFloat() * 1.0F * i1;
+				double d2 = par5Random.nextFloat() * (par5Random.nextInt(2) * 2 - 1);
+				double d3 = (par5Random.nextFloat() - 0.5D) * 0.125D;
+				double d4 = par5Random.nextFloat() * (par5Random.nextInt(2) * 2 - 1);
 				par1World.spawnParticle("portal", x+0.5, d1, z+0.5, d2, d3, d4);
 			}
 		}

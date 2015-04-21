@@ -32,8 +32,10 @@ public class GuiTeleport extends GuiScreen{
 	float c = 0;
 
 	float sd = 0;
+	private int guiScale = 0;
 
 	public GuiTeleport(EntityPlayer player, TETelepad te){
+		guiScale = Minecraft.getMinecraft().gameSettings.guiScale;
 		Minecraft.getMinecraft().gameSettings.guiScale = 2;
 
 		this.te = te;
@@ -47,12 +49,12 @@ public class GuiTeleport extends GuiScreen{
 		if(player != null){
 			int id = button.id;
 			if(id == EXIT_BUTTON ){
-				sendPacket(EXIT_BUTTON, button);
 				this.mc.thePlayer.closeScreen(); //closes the screen
-
+				Minecraft.getMinecraft().gameSettings.guiScale = guiScale;
 			}else{
-				sendPacket(id, button);
+				sendPacket(id);
 				this.mc.thePlayer.closeScreen(); //closes the screen
+				Minecraft.getMinecraft().gameSettings.guiScale = guiScale;
 			}
 		}
 
@@ -89,6 +91,7 @@ public class GuiTeleport extends GuiScreen{
 		super.drawScreen(par1, par2, par3);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void initGui() {
 
@@ -120,6 +123,7 @@ public class GuiTeleport extends GuiScreen{
 
 		if(i == Keyboard.KEY_ESCAPE){
 			te.resetTE();
+			Minecraft.getMinecraft().gameSettings.guiScale = guiScale;
 			mc.thePlayer.closeScreen();
 		}
 	}
@@ -131,24 +135,26 @@ public class GuiTeleport extends GuiScreen{
 	}
 
 
-	public void sendPacket(int id, GuiButton button){
+	public void sendPacket(int id){
 		ByteBuf buf = Unpooled.buffer();
 		ByteBufOutputStream out = new ByteBufOutputStream(buf);
 
 		try {
 
-			out.writeInt(Serverpacket.TELEPORT); //TODO a packet int here
-			out.writeInt(te.xCoord);
-			out.writeInt(te.yCoord);
-			out.writeInt(te.zCoord);
+			if(id < PlayerPadData.get(player).getAllDims().size()){
+				out.writeInt(Serverpacket.TELEPORT); //TODO a packet int here
+				out.writeInt(te.xCoord);
+				out.writeInt(te.yCoord);
+				out.writeInt(te.zCoord);
 
-			if(button.id < EXIT_BUTTON){
-				out.writeInt(PlayerPadData.get(player).getAllDims().get(button.id)); //other pad dimension
+				out.writeInt(PlayerPadData.get(player).getAllDims().get(id)); //other pad dimension
 
-				out.writeInt(PlayerPadData.get(player).getAllCoords().get(button.id)[0]); //other pad x
-				out.writeInt(PlayerPadData.get(player).getAllCoords().get(button.id)[1]); //other pad y
-				out.writeInt(PlayerPadData.get(player).getAllCoords().get(button.id)[2]); //other pad z
+				out.writeInt(PlayerPadData.get(player).getAllCoords().get(id)[0]); //other pad x
+				out.writeInt(PlayerPadData.get(player).getAllCoords().get(id)[1]); //other pad y
+				out.writeInt(PlayerPadData.get(player).getAllCoords().get(id)[2]); //other pad z
 				Telepads.Channel.sendToServer(new FMLProxyPacket(buf, Telepads.packetChannel));
+			} else {
+				Telepads.log.error("Tried to teleport to an unknown target " + id);
 			}
 
 			out.close();

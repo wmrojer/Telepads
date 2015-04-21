@@ -85,6 +85,8 @@ public class GuiNameTelepad extends GuiScreen{
 		super.keyTyped(c, i);
 		if(i == Keyboard.KEY_RETURN) {
 			sendPacket(padNameField.getText());
+			te.isNamed = true;
+			this.mc.thePlayer.closeScreen();
 		}
 
 		if(padNameField != null) {
@@ -120,7 +122,5 @@ public class GuiNameTelepad extends GuiScreen{
 			out.close();
 		} catch (Exception e) {
 		}
-
-		this.mc.thePlayer.closeScreen();
 	}
 }

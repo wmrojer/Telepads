@@ -13,30 +13,29 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentText;
 import telepads.Telepads;
+import telepads.config.ConfigHandler;
 import telepads.util.TelePadGuiHandler;
 
 public class TETelepad extends TileEntity{
 
+	// Saved members
 	public String telepadname = "TelePad";
-
-	public int dimension;
-
 	public String ownerName = "";
-
+	public int dimension;
+	public boolean isUniversal;
+	public boolean lockedUniversal;
+	// End Saved Members
+	
+	public boolean isNamed = true;
+	private boolean guiOpen;
 	public boolean isStandingOnPlatform = false;
-
-	public static final int def_count = 5*20;
-	public int counter = def_count;
-
 	/**Set when player walks on a pad*/
 	public EntityPlayer playerStandingOnPad = null;
 
-	private boolean guiOpen;
+	public static final int def_count = 20 * ConfigHandler.teleportDelay;
+	public int counter = def_count;
 
-	public boolean isUniversal;
-
-	public boolean lockedUniversal;
-
+	
 	public void addRegister(){
 
 		EntityPlayer p = worldObj.getPlayerEntityByName(ownerName);
@@ -82,7 +81,7 @@ public class TETelepad extends TileEntity{
 	@Override
 	public void readFromNBT(NBTTagCompound par1nbtTagCompound) {
 
-		telepadname = (par1nbtTagCompound.getString("name"));
+		telepadname = par1nbtTagCompound.getString("name");
 		ownerName = par1nbtTagCompound.getString("owner");
 		dimension = par1nbtTagCompound.getInteger("dimension");
 		isUniversal = par1nbtTagCompound.getBoolean("isUniversal");
@@ -105,6 +104,7 @@ public class TETelepad extends TileEntity{
 		markDirty();
 		worldObj.markBlockForUpdate(xCoord, yCoord,zCoord);
 		guiOpen = false;
+		isNamed = true;
 	}
 
 
@@ -114,6 +114,7 @@ public class TETelepad extends TileEntity{
 
 		AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(xCoord, yCoord, zCoord, xCoord+0.5, yCoord+0.5, zCoord+0.5);
 
+		@SuppressWarnings("unchecked")
 		List<EntityPlayer> playerInAabb = worldObj.getEntitiesWithinAABB(EntityPlayer.class, aabb);
 
 		if(isStandingOnPlatform) {
@@ -134,7 +135,7 @@ public class TETelepad extends TileEntity{
 				}
 			}
 
-			if((counter < 0) && !guiOpen) {
+			if((counter < 0) && !guiOpen && isNamed) {
 				if(p != null) {
 					if(!p.inventory.hasItem(Telepads.register)){
 						if(!worldObj.isRemote) {
