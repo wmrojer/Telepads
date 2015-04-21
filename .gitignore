@@ -1,1 +1,10 @@
 /bin/
+/saves/
+/logs/
+/config/
+/build/
+/options.txt
+/usernamecache.json
+/build.bat
+/mods/
+/resourcepacks/
